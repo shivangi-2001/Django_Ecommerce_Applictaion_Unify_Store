@@ -1,0 +1,186 @@
+{% load url_tag %}
+<!-- Toggle button -->
+<button data-mdb-collapse-init class="btn btn-outline-secondary mb-3 w-100 d-lg-none" type="button"
+    data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span>Show filter</span>
+</button>
+<!-- Collapsible wrapper -->
+<div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button data-mdb-collapse-init class="accordion-button text-dark bg-light" type="button"
+                    data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne">
+                    Related items
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                <div class="accordion-body">
+                    <ul class="list-unstyled">
+                        <li><a href="/products/?collection_id=0177fbaf-b54e-474c-9fdb-fb925052f058" class="text-dark">Home items </a></li>
+                        <li><a href="/products/?collection_id=2a71844d-ae1f-4a46-9753-3d8de261b6a9" class="text-dark">Underwears</a></li>
+                        <li><a href="/products/?collection_id=53cfd5d9-4071-47c9-9209-8b0011488744" class="text-dark">Stationary </a></li>
+                        <li><a href="/products/?collection_id=759821dd-b92d-4dbc-9b06-cd307d17bb48" class="text-dark"> Toys</a></li>
+                        <li><a href="/products/?collection_id=9a0f9657-51d8-4b59-a531-78e805d20ff1" class="text-dark">Electronics</a></li>
+                        <li><a href="/products/?collection_id=9f8c1bd7-03de-4546-a02d-551dd8eabf07" class="text-dark">Men's clothing  </a></li>
+                        <li><a href="/products/?collection_id=d30a855c-ce4b-4c37-a8e0-f886a11a5f25" class="text-dark">Women's clothing</a></li>
+                        <li><a href="/products/?collection_id=f05b6914-7625-4540-90f8-cb2440a8eee0" class="text-dark">Accessories</a></li>
+                        <li><a href="/products/?collection_id=f0685900-ac0c-4126-ba10-3948fd37287b" class="text-dark">Interiors items</a></li>
+                        <li><a href="/products/?collection_id=f432744b-8f38-401a-b9c2-d742653cc4d7" class="text-dark">Books, Magazines  </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+
+            <h2 class="accordion-header" id="headingThree">
+                <button data-mdb-collapse-init class="accordion-button text-dark bg-light" type="button"
+                    data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseThree">
+                    Price
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                <div class="accordion-body">
+                    <div class="range">
+                        <input type="range" class="form-range" id="customRange1" />
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <p class="mb-0">
+                                Min
+                            </p>
+                            <div class="form-outline">
+                                <input type="number" id="id_min_price" name="min_price" min=0 class="form-control" />
+                                <label class="form-label" for="id_min_price">$0</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0">
+                                Max
+                            </p>
+                            <div class="form-outline">
+                                <input type="number" id="id_max_price" name="max_price" min="0" max="99999" class="form-control" />
+                                <label class="form-label" for="id_max_price">$1,0000</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="apply-btn"
+                        class="btn btn-white w-100 border border-secondary">apply</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button data-mdb-collapse-init class="accordion-button text-dark bg-light" type="button"
+                    data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseFour" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseFour">
+                    Size
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                <div class="accordion-body">
+                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check1" checked
+                        autocomplete="off" />
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check1">XS</label>
+                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check2" checked
+                        autocomplete="off" />
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check2">SM</label>
+                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check3" checked
+                        autocomplete="off" />
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check3">LG</label>
+                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check4" checked
+                        autocomplete="off" />
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check4">XXL</label>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+                <button data-mdb-collapse-init class="accordion-button text-dark bg-light" type="button"
+                    data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseFive" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseFive">
+                    Ratings
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive">
+                <div class="accordion-body">
+                    <!-- Default checkbox -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
+                        <label class="form-check-label" for="flexCheckDefault">
+                            <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </label>
+                    </div>
+                    <!-- Default checkbox -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
+                        <label class="form-check-label" for="flexCheckDefault">
+                            <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-secondary"></i>
+                        </label>
+                    </div>
+                    <!-- Default checkbox -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
+                        <label class="form-check-label" for="flexCheckDefault">
+                            <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                class="fas fa-star text-warning"></i><i class="fas fa-star text-secondary"></i>
+                            <i class="fas fa-star text-secondary"></i>
+                        </label>
+                    </div>
+                    <!-- Default checkbox -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
+                        <label class="form-check-label" for="flexCheckDefault">
+                            <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                class="fas fa-star text-secondary"></i><i class="fas fa-star text-secondary"></i>
+                            <i class="fas fa-star text-secondary"></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const applyBtn = document.getElementById('apply-btn');
+
+        applyBtn.addEventListener('click', function () {
+            const minPriceValue = document.getElementById('id_min_price').value;
+            const maxPriceValue = document.getElementById('id_max_price').value;
+            const currentUrl = new URL(window.location.href);
+            if (currentUrl.searchParams.has('collection_id')) {
+                console.log("get there")
+                if (currentUrl.searchParams.has('page')) {
+                    if (minPriceValue || maxPriceValue) {
+                        currentUrl.searchParams.set('min_price', minPriceValue);
+                        currentUrl.searchParams.set('max_price', maxPriceValue);
+                        currentUrl.searchParams.delete('page');
+                        window.location.href = currentUrl.toString();
+                    }
+                }
+                else {
+                    if (minPriceValue || maxPriceValue) {
+                        currentUrl.searchParams.set('min_price', minPriceValue);
+                        currentUrl.searchParams.set('max_price', maxPriceValue);
+                        window.location.href = currentUrl.toString();
+                    }
+                }
+            }
+        });
+    });
+</script>

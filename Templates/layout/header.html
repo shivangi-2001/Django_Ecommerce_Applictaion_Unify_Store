@@ -1,0 +1,71 @@
+<div class="p-3 text-center bg-white border-bottom" style="overflow: hidden;">
+    <div class="container">
+        <div class="row gy-3">
+            <div class="col-lg-2 col-sm-4 col-4">
+                <a href="/" target="_blank" class="float-start">
+                    <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
+                </a>
+            </div>
+
+            <div class="order-lg-last col-lg-5 col-sm-8 col-8">
+                <div class="d-flex float-end">
+                    <a href="#" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"
+                        target="_blank">
+                        <i class="fas fa-user-alt m-1 me-md-2"></i>
+                        <p class="d-none d-md-block mb-0">Sign in</p>
+                    </a>
+                    <a href="#" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"
+                        target="_blank">
+                        <i class="fas fa-heart m-1 me-md-2"></i>
+                        <p class="d-none d-md-block mb-0">Wishlist</p>
+                    </a>
+                    <a href="#" class="border rounded py-1 px-3 nav-link d-flex align-items-center" target="_blank">
+                        <i class="fas fa-shopping-cart m-1 me-md-2"></i>
+                        <p class="d-none d-md-block mb-0">My cart</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-5 col-md-12 col-12">
+                <div class="input-group float-center">
+                    <div class="form-outline">
+                        <input type="search" id="id_product_title" class="form-control" name="product_title" />
+                        <label class="form-label" for="id_product_title">Search</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary shadow-0" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+<script>
+    const search_input =  document.querySelector('#id_product_title');
+    const searchBtn = document.querySelector('#searchBtn');
+
+
+    searchBtn.addEventListener('click', () => {
+        const currentUrl = new URL(window.location.href);
+            if (currentUrl.searchParams.has('collection_id')) {
+                if (currentUrl.searchParams.has('page')) {
+                    if (search_input.value) {
+                        currentUrl.searchParams.set('product_title', search_input.value);
+                        currentUrl.searchParams.delete('page');
+                        window.location.href = currentUrl.toString();
+                    }
+                }
+                else {
+                    if (search_input.value) {
+                        currentUrl.searchParams.set('product_title', search_input.value);
+                        currentUrl.searchParams.delete('page');
+                        window.location.href = currentUrl.toString();
+                    }
+                }
+            }
+    })
+
+</script>
