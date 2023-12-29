@@ -1,0 +1,20 @@
+{% block html %}
+
+<div>Dear <strong>{{ email }}</strong>,</div>
+
+<h2>Welcome to Ecommerce Platfrom! </h2>
+
+<p>Your One-Time Password (OTP) for account activation is: {{ token }}.</p>
+
+<p>Use this code to complete your account setup and enjoy a seamless shopping experience.</p>
+
+<p>Happy shopping!</p>
+
+<div>
+    Best,
+    <div>Ecommerce Team</div>
+</div>
+{% endblock %}
+
+
+

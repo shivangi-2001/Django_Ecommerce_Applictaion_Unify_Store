@@ -1,5 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils import timezone
 import uuid
+
+user = get_user_model()
 
 class Collection(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True, auto_created=True)
@@ -21,3 +25,14 @@ class Product(models.Model):
 
     class Meta:
         verbose_name  = 'Product'
+        
+
+class Cart(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class CartItem(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_id')
+    quantity = models.PositiveIntegerField(default=1)

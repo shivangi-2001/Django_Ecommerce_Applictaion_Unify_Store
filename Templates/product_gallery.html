@@ -42,7 +42,7 @@
                 <p class="card-text">{{product.title}}</p>
                 <p class="blockquote-footer">{{product.collection.title}}</p>
                 <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                  <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+                     <a href="{% url 'add_to_cart' pk=product.id %}" type="submit" class="btn btn-primary shadow-0 me-1">Add to cart</a>
                   <a href="#!" class="btn btn-light border icon-hover px-2 pt-2"><i
                       class="fas fa-heart fa-lg text-secondary px-1"></i></a>
                 </div>
@@ -97,7 +97,7 @@
                       <span class="text-danger"><s>$49.99</s></span>
                     </div>
                     <div class="mt-4">
-                      <button class="btn btn-primary shadow-0" type="button">Add to Cart</button>
+                      <a href="{% url 'add_to_cart' pk=product.id %}" class="btn btn-primary shadow-0" type="button">Add to Cart</a>
                       <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
                           class="fas fa-heart fa-lg px-1"></i></a>
                     </div>

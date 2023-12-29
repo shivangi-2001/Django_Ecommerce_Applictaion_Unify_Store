@@ -9,11 +9,17 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 from pathlib import Path
 import os
+import environ
+
+
+env = environ.Env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# environ.Env.read_env(BASE_DIR/ '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,8 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'django_otp',
+    'django_otp.plugins.otp_email',
+    'django_otp.plugins.otp_static',
     'rest_framework',
     'STORE',
+    'PROFILE',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +137,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AUTH_USER_MODEL = 'PROFILE.User'
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 2525
+DEFAULT_AUTO_EMAIL = 'no_reply@ecommerce.com'
+
+OTP_EMAIL_BODY_HTML_TEMPLATE_PATH = 'email/send_otp.html'
+OTP_EMAIL_TOKEN_VALIDITY = 300
