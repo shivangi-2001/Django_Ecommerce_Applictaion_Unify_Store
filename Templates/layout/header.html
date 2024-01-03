@@ -6,17 +6,15 @@
                     <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
                 </a>
             </div>
-
             <div class="order-lg-last col-lg-5 col-sm-8 col-8">
                 <div class="d-flex float-end">
                     {% if not user.is_authenticated %}
-                    <a href="{% url 'create_user' %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"
-                        target="_blank">
+                    <a href="{% url 'create_user' %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
                         <i class="fas fa-user-alt m-1 me-md-2"></i>
                         <p class="d-none d-md-block mb-0">Sign in</p>
                     </a>
                     {% else %}
-                    <a href="{% url 'create_user' %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
+                    <a href="{% url 'profile' pk=user.id %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
                         <i class="fas fa-user-alt m-1 me-md-2"></i>
                         <p class="d-none d-md-block mb-0">Profile</p>
                     </a>
@@ -25,7 +23,7 @@
                         <i class="fas fa-heart m-1 me-md-2"></i>
                         <p class="d-none d-md-block mb-0">Wishlist</p>
                     </a>
-                    <a href="{% url 'your_cart' pk='c38ecb80d1ce475887012af834843bf6' %}" class="border rounded py-1 px-3 nav-link d-flex align-items-center">
+                    <a href="{% url 'user_cart' user_id=user.id %}" class="border rounded py-1 px-3 nav-link d-flex align-items-center">
                         <i class="fas fa-shopping-cart m-1 me-md-2"></i>
                         <p class="d-none d-md-block mb-0">My cart</p>
                     </a>

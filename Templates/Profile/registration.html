@@ -8,6 +8,9 @@
           <div class="card-body p-md-5">
             <div class="row justify-content-center">
               <h3 class="text-center">Already have account? <a class="text-danger" href="{% url 'login' %}">Sign in</a></h3>
+              <h5 class="text-center">Not Verified your accounts?<a type="button" class="text-primary mx-2" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#exampleModal">
+  click here
+</a></h5>
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
                 <p class="h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" >Sign up</p>
@@ -17,6 +20,10 @@
                   {% csrf_token %}
                   {% if form.errors %}
                   {{ form.errors }}
+                  {% endif %}
+
+                  {% if error_message %}
+                  <div class="alert alert-danger">{{ error_message }}</div>
                   {% endif %}
 
                   <div class="d-flex flex-row align-items-center mb-4">
@@ -70,5 +77,52 @@
     </div>
   </div>
 </section>
+
+
+<section>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'get_user_id' %}">
+      {% csrf_token %}
+      <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Enter Email:</h5>
+        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Email:</label>
+          <input class="form-control" name="email" required>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="email_btn" class="btn btn-primary" data-mdb-ripple-init>Continue</button>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+</section>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get the email button element
+    var emailBtn = document.getElementsByName("email_btn")[0];
+
+    // Add a click event listener to the email button
+    emailBtn.addEventListener("click", function () {
+      // Get the email input value from the modal
+      var emailInput = document.querySelector("input[name='email']");
+      var email = emailInput.value;
+
+      // Save the email to local storage
+      localStorage.setItem("userEmail", email);
+
+      // Log the email to the console (optional)
+      console.log("User Email:", email);
+    });
+  });
+</script>
+
+
 
 {% endblock %}

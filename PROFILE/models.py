@@ -23,7 +23,7 @@ class User(AbstractUser):
     )
     email = models.EmailField(unique=True, max_length=100, validators=[validate_email])
     otp = models.CharField(max_length=6, null=True, unique=True)
-    email_otp_verified = models.BooleanField(default=False)
+    reset_timer = models.DateTimeField(null=True, blank=True)
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

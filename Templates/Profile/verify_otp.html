@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+
 {% block content %}
 <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">
@@ -8,8 +9,19 @@
                     <div class="card-body p-md-5">
                         <div class="row justify-content-center">
                             <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                                {% if info %}
+                                <div class="alert alert-warning">{{ info }}</div>
+                                <br/>
+                                {% endif %}
 
-                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Enter OTP</p>
+                                <p class="text-center h1 fw-bold mb-5 mx-1  mt-4">Enter OTP</p>
+                                <p class="text-center lead">
+                                    {% if login_attempt == 1 %}
+                                        Last attempt! Try carefully.
+                                    {% else %}
+                                        Activate the account, You have to verify your Account {{ login_attempt }}.
+                                    {% endif %}
+                                </p>
 
                                 <form method="POST" class="mx-1 mx-md-4" id="otpForm">
                                     {% csrf_token %}
@@ -21,6 +33,24 @@
                                             {% endfor %}
                                         </div>
                                     </div>
+                                    <input type="hidden" name="otp" id="id_otp">
+
+                                    {% if form.errors.otp %}
+                                    <div class="alert alert-danger">{{ form.errors.otp }}</div>
+                                    {% endif %}
+
+                                    {% if error_message %}
+                                    <div class="alert alert-danger">{{ error_message }}</div>
+                                    {% endif %}
+
+                                    {% if messages %}
+                                    <ul class="messages">
+                                        {% for message in messages %}
+                                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <button type="submit" class="btn btn-primary btn-lg">Confirm</button>
                                     </div>
@@ -40,23 +70,39 @@
         </div>
     </div>
 </section>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const otpInputs = document.querySelectorAll('.otp-input');
+        const hiddenOtpField = document.getElementById('id_otp');
+
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (event) => {
                 if (event.target.value.length === 1) {
                     if (index < otpInputs.length - 1) {
                         otpInputs[index + 1].focus();
+                    } else {
+                        // If the last OTP field is filled, set the value in the hidden field
+                        setHiddenOtpValue();
                     }
                 }
             });
+
             input.addEventListener('keydown', (event) => {
                 if (event.key === 'Backspace' && index > 0) {
                     otpInputs[index - 1].focus();
                 }
             });
         });
+
+        function setHiddenOtpValue() {
+            const otpValue = Array.from(otpInputs).map(input => input.value).join('');
+            hiddenOtpField.value = otpValue;
+
+            console.log('Combined OTP:', otpValue);
+        }
+
     });
 </script>
+
 {% endblock %}

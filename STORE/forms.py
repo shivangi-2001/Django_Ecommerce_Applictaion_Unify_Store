@@ -10,4 +10,9 @@ class ProductForm(forms.ModelForm):
 class CartItemForm(forms.ModelForm):
     class Meta:
         model = CartItem
-        fields = '__all__'
+        fields = ['cart', 'product', 'quantity']
+
+class UpdateQuantityForm(forms.ModelForm):
+    class Meta:
+        model = CartItem
+        fields = ['quantity']

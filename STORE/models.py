@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 import uuid
 
-user = get_user_model()
+USER = get_user_model()
 
 class Collection(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True, auto_created=True)
@@ -28,6 +28,7 @@ class Product(models.Model):
         
 
 class Cart(models.Model):
+    user = models.ForeignKey(USER, on_delete=models.CASCADE, related_name='user', null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
