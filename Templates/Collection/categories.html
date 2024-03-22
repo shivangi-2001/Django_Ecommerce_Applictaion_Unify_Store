@@ -40,10 +40,10 @@
                 <div class="row">
                     {% for item in object_list %}
                     <div class="col-2 mb-5">
-                        <a href="#" class="text-center d-flex flex-column justify-content-center">
+                        <a href="/products/?collection_id={{item.id}}" class="text-center d-flex flex-column justify-content-center">
                             <button type="button" class="btn btn-outline-secondary mx-auto p-3 mb-2"
                                 data-mdb-ripple-color="dark">
-                                <i class="fas fa-basketball-ball fa-xl fa-fw"></i>
+                                <i class="fas fa-earth-asia fa-xl fa-fw"></i>
                             </button>
                             <div class="text-dark">{{item.title}}</div>
                         </a>
@@ -75,13 +75,26 @@
                         <img src="{{ product.image.url }}" class="card-img-top rounded-2" style="aspect-ratio: 1 / 1" />
                     </a>
                     <div class="card-body p-0 pt-3">
-                        <a href="#!" class="btn btn-light border px-2 pt-2 float-end icon-hover"><i
-                                class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
+                    {% if product.id in wishlist_products %}
+                   <form method="POST" action="/wishlist">
+                    {% csrf_token %}
+                     <input type="text" name="product_id" value={{product.id}} hidden="">
+                    <button type="submit" class="btn btn-light border float-end icon-hover px-2 pt-2" name="remove_wish">
+                      <i class="fas fa-heart fa-lg text-danger px-1"></i>
+                    </button>
+                  </form>
+                  {% else %}
+                  <form method="POST" action="/wishlist">
+                    {% csrf_token %}
+                    <input type="text" name="product_id" value={{product.id}} hidden="">
+                    <button type="submit" class="btn btn-light border float-end icon-hover px-2 pt-2">
+                      <i class="fas fa-heart fa-lg text-secondary px-1"></i>
+                    </button>
+                  </form>
+                  {% endif %}
                         <h5 class="card-title">${{ product.unit_price }}</h5>
                         <p class="card-text mb-0">{{product.title}}</p>
-                        <p class="text-muted">
-                            {{ product.slug }}
-                        </p>
+
                     </div>
                 </div>
             </div>
@@ -119,9 +132,24 @@
                             class="card-img-top rounded-2" style="aspect-ratio: 1 / 1" />
                     </a>
                     <div class="card-body p-0 pt-3">
-                        <a href="#!" class="btn btn-light border px-2 pt-2 float-end icon-hover"><i
-                                class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
-                        <h5 class="card-title">${{proudct.unit_price}}</h5>
+                        {% if product.id in wishlist_products %}
+                   <form method="POST" action="/wishlist">
+                    {% csrf_token %}
+                     <input type="text" name="product_id" value={{product.id}} hidden="">
+                    <button type="submit" class="btn btn-light border float-end icon-hover px-2 pt-2" name="remove_wish">
+                      <i class="fas fa-heart fa-lg text-danger px-1"></i>
+                    </button>
+                  </form>
+                  {% else %}
+                  <form method="POST" action="/wishlist">
+                    {% csrf_token %}
+                    <input type="text" name="product_id" value={{product.id}} hidden="">
+                    <button type="submit" class="btn btn-light border float-end icon-hover px-2 pt-2">
+                      <i class="fas fa-heart fa-lg text-secondary px-1"></i>
+                    </button>
+                  </form>
+                  {% endif %}
+                        <h5 class="card-title">${{product.unit_price}}</h5>
                         <p class="card-text mb-0">{{ product.title }}</p>
                         <p class="text-muted">
                             Sizes: S, M, XL
@@ -134,5 +162,6 @@
     </div>
 </section>
 
+{% include 'layout/footer.html' %}
 
 {% endblock %}

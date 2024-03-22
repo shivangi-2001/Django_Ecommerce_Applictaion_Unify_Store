@@ -2,114 +2,124 @@
 {% block content %}
 {% include 'layout/header.html' %}
 
+
+
 <section class="py-5 bg-light">
   <div class="container">
     <div class="row">
-      <div class="col-lg-3 col-xl-3">
-        <nav class="nav flex-lg-column w-100 d-flex nav-pills mb-4">
-          <a class="nav-link my-0 bg-light active" href="#" id="account_main" onclick="setActiveTab('account_main')">
-            <p class="pb-0 mb-0" style="width: 100px">Account main</p>
-          </a>
-          <a class="nav-link my-0 bg-light" href="#" id="new_orders" onclick="setActiveTab('new_orders')">
-            <p class="pb-0 mb-0" style="width: 100px">New orders</p>
-          </a>
-          <a class="nav-link my-0 bg-light" href="#" id="orders_history" onclick="setActiveTab('orders_history')">
-            <p class="pb-0 mb-0" style="width: 100px">Orders history</p>
-          </a>
-          <a class="nav-link my-0 bg-light" href="#" id="wishlist" onclick="setActiveTab('wishlist')">
-            <p class="pb-0 mb-0" style="width: 100px">My wishlist</p>
-          </a>
-          <a class="nav-link my-0 bg-light" href="#" id="transcation" onclick="setActiveTab('transcation')">
-            <p class="pb-0 mb-0" style="width: 100px">Transactions</p>
-          </a>
-          <a class="nav-link my-0 bg-light" href="#" id="profilesettings" onclick="setActiveTab('profilesettings')">
-            <p class="pb-0 mb-0" style="width: 100px">Profile setting</p>
-          </a>
-          <button type="button" class="nav-link my-0" id="logout" onclick="setActiveTab('logout')" data-mdb-ripple-init
-            data-mdb-modal-init data-mdb-target="#logoutModal">
-            <p class="pb-0 mb-0" style="width: 100px">Log out</p>
-          </button>
-        </nav>
+      <div class="col-3">
+        <div class="nav flex-column nav-pills text-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          <a data-mdb-pill-init class="nav-link " id="v-pills-home-tab" href="#v-pills-home" role="tab"
+            aria-controls="v-pills-home" aria-selected="true">Account Main</a>
+          <a data-mdb-pill-init class="nav-link" id="v-pills-new-order-tab" href="#v-pills-new-order" role="tab"
+            aria-controls="v-pills-home" aria-selected="true">New Orders</a>
+          <a data-mdb-pill-init class="nav-link" id="v-pills-order-history-tab" href="#v-pills-order-history" role="tab"
+            aria-controls="v-pills-home" aria-selected="true">Order History</a>
+          <a data-mdb-pill-init class="nav-link" id="v-pills-transaction-tab" href="#v-pills-transaction" role="tab"
+            aria-controls="v-pills-home" aria-selected="true">Transactions</a>
+          <a data-mdb-pill-init class="nav-link active" id="v-pills-profile-tab" href="#v-pills-profile" role="tab"
+            aria-controls="v-pills-profile" aria-selected="false">Profile Settings</a>
+          <a data-mdb-pill-init class="nav-link" id="v-pills-messages-tab" href="#v-pills-messages" role="tab"
+            aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+          <a data-mdb-pill-init class="nav-link" id="v-pills-logout-tab" href="#v-pills-logout" role="tab"
+            aria-controls="v-pills-messages" aria-selected="false">Logout</a>
+        </div>
       </div>
-      <main class="col-lg-9 col-xl-9">
-        <div class="card p-4 mb-0 shadow-0 border">
-          <div class="content-body">
-            <div class="d-flex align-items-center">
-              <div class="me-3">
-                <img src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp" class="rounded-circle"
-                  style="height: 60px; width: 60px;" />
-              </div>
-              <div class="pt-2">
-                <h6 class="pt-2">{{ user.username }}</h6>
-                <p>
-                  Email: {{ user.email }}
-                  <a href="#" class="px-2"><i class="fa fa-pen"></i></a>
-                </p>
-              </div>
-            </div>
 
-            <hr />
+      <div class="col-9">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div class="tab-pane fade " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+            Home content
+          </div>
+          <div class="tab-pane fade" id="v-pills-new-order" role="tabpanel" aria-labelledby="v-pills-new-order-tab">
+            New Order
+          </div>
+          <div class="tab-pane fade" id="v-pills-order-history" role="tabpanel" aria-labelledby="v-pills-order-tab">
+            Order History
+          </div>
+          <div class="tab-pane fade" id="v-pills-transaction" role="tabpanel" aria-labelledby="v-pills-transaction-tab">
+            Order History
+          </div>
+          <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+            <div class="card p-4 mb-0 shadow-0 border">
+              <div class="content-body">
+                <form action="{% url 'profile' pk=user.id %}" method="post">
+                  {% csrf_token %}
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <input type="email" id="id_email" name="email" class="form-control" value={{user}} disabled/>
+                    <label class="form-label" for="id_email">Email address</label>
+                  </div>
 
-            <div class="row g-2 mb-3">
-              <div class="col-md-6">
-                <div class="border p-3 rounded-3 bg-light">
-                  <b class="mx-2 text-muted"><i class="fa fa-map-marker-alt"></i></b>
-                  United States, 3601 Old Capitol Trail, Unit A-7, Suite
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <input type="text" class="form-control" name="first_name" id="id_first_name" value={{user.first_name}}>
+                    <label for="id_first_name" class="form-label">first name:</label>
+                  </div>
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <input type="text" class="form-control" name="last_name" id="id_last_name" value={{user.last_name}}>
+                    <label for="id_last_name" class="form-label">last name:</label>
+                  </div>
+
+                  <button type="submit" class="btn btn-outline-primary">save</button>
+                </form>
+
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <img src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp" class="rounded-circle"
+                        style="height: 60px; width: 60px;" />
+                    </div>
+                    <div class="pt-2">
+                      <h6 class="pt-2">{{ user.first_name }}</h6>
+                      <p>
+                        Email: {{ user.email }}
+                        <a href="#" class="px-2"><i class="fa fa-pen"></i></a>
+                      </p>
+                    </div>
+                  </div>
+
+                <hr />
+
+                <div class="row g-2 mb-3">
+                  <div class="col-md-6">
+                    <div class="border p-3 rounded-3 bg-light">
+                      <b class="mx-2 text-muted"><i class="fa fa-map-marker-alt"></i></b>
+                      United States, 3601 Old Capitol Trail, Unit A-7, Suite
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="border p-3 rounded-3 bg-light">
+                      <b class="mx-2 text-muted"><i class="fa fa-map-marker-alt"></i></b>
+                      Moscow city, Street name, Building lenin, House 77
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="border p-3 rounded-3 bg-light">
-                  <b class="mx-2 text-muted"><i class="fa fa-map-marker-alt"></i></b>
-                  Moscow city, Street name, Building lenin, House 77
-                </div>
-              </div>
             </div>
-
-            <a href="#" class="btn btn-light border"> <i class="me-2 fa fa-plus"></i> Add new address </a>
-
-            <hr class="my-4" />
-
           </div>
         </div>
-      </main>
-    </div>
+        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+          Messages content
+        </div>
+        <div class="tab-pane fade" id="v-pills-logout" role="tabpanel" aria-labelledby="v-pills-messages-tab">
 
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <div class="card p-4 mb-0 shadow-0 border">
+              <h5 class="modal-title" id="exampleModalLabel">Logout</h5>
+              <p class="display-3 text-danger">Leave so soon?</p>
+              <p class="lead h5">Confirm you want to Logout Session .... </p>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" data-mdb-ripple-init
+                  data-mdb-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-primary" data-mdb-ripple-init>Yes</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 </section>
 
-
-
-<!-- Modal -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Logout</h5>
-          <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
-            aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <p class="h3 text-danger">Leave so soon?</p>
-            <p class="lead h4">Confirm you want to Logout Session .... </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" data-mdb-ripple-init data-mdb-dismiss="modal">No</button>
-          <button type="submit" class="btn btn-primary" data-mdb-ripple-init>Yes</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-<script>
-  function setActiveTab(tabId) {
-    console.log(tabId)
-    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-
-    // Add 'active' class to the clicked nav link
-    document.querySelector(`#${tabId}`).classList.add('active');
-  }
-</script>
 
 {% endblock%}

@@ -6,7 +6,7 @@ urlpatterns = [
     path('auth/register', RegisterView.as_view(), name="create_user"),
     path('auth/<int:pk>/verify_otp', VerifyOTPView.as_view(), name='verify_otp'),
     path('login', Login.as_view(), name='login'),
-    path('auth/<int:pk>/accounts/profile', AccountProfile.as_view(), name='profile'),
+    path('auth/<str:pk>/accounts/profile', AccountProfile.as_view(), name='profile'),
     path('logout', LogoutView.as_view(), name='logout'),
-    path('/get_user_id', get_user_id, name="get_user_id")
+    path('get_user_id', get_user_id, name="get_user_id")
 ]

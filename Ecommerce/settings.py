@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 from pathlib import Path
+from datetime import timedelta
 import os
 import environ
 
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_auto_logout.middleware.auto_logout'
 ]
 
 ROOT_URLCONF = 'Ecommerce.urls'
@@ -74,6 +76,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_auto_logout.context_processors.auto_logout_client',
+
             ],
         },
     },
@@ -148,6 +152,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 2525
 DEFAULT_AUTO_EMAIL = 'no_reply@ecommerce.com'
 
+
 OTP_EMAIL_BODY_HTML_TEMPLATE_PATH = 'email/send_otp.html'
 OTP_EMAIL_TOKEN_VALIDITY = 300
 
@@ -159,3 +164,10 @@ LOGOUT_REDIRECT_URL = 'create_user'
 
 OTP_LOGIN_ATTEMPT = 3
 EMAIL_RESET_TIME = 30
+
+AUTO_LOGOUT = {
+    'IDLE_TIME': timedelta(minutes=5),
+    'SESSION_TIME': timedelta(minutes=30),
+    'MESSAGE': 'The session has expired. Please login again to continue.',
+    'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
+}

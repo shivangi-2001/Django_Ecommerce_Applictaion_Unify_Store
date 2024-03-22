@@ -1,15 +1,16 @@
+{% load static %}
 <div class="p-3 text-center bg-white border-bottom" style="overflow: hidden;">
     <div class="container">
         <div class="row gy-3">
             <div class="col-lg-2 col-sm-4 col-4">
-                <a href="/" target="_blank" class="float-start">
-                    <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
+                <a href="/"  class="float-start">
+                    <img src="{% static 'image/logo.png' %}" height="35" />
                 </a>
             </div>
             <div class="order-lg-last col-lg-5 col-sm-8 col-8">
                 <div class="d-flex float-end">
                     {% if not user.is_authenticated %}
-                    <a href="{% url 'create_user' %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
+                    <a href="{% url 'login' %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
                         <i class="fas fa-user-alt m-1 me-md-2"></i>
                         <p class="d-none d-md-block mb-0">Sign in</p>
                     </a>
@@ -19,7 +20,7 @@
                         <p class="d-none d-md-block mb-0">Profile</p>
                     </a>
                     {% endif%}
-                    <a href="#" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
+                    <a href="{% url 'user_wishlist' %}" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center">
                         <i class="fas fa-heart m-1 me-md-2"></i>
                         <p class="d-none d-md-block mb-0">Wishlist</p>
                     </a>
@@ -32,8 +33,8 @@
 
             <div class="col-lg-5 col-md-12 col-12">
                 <div class="input-group float-center">
-                    <div class="form-outline">
-                        <input type="search" id="id_product_title" class="form-control" name="product_title" />
+                    <div class="form-outline" data-mdb-input-init >
+                        <input  type="search" id="id_product_title" class="form-control" name="product_title" />
                         <label class="form-label" for="id_product_title">Search</label>
                     </div>
                     <button type="submit" class="btn btn-primary shadow-0" id="searchBtn">

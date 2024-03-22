@@ -37,3 +37,28 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_id')
     quantity = models.PositiveIntegerField(default=1)
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(USER, on_delete=models.CASCADE, related_name='user_wishlist', null=True)
+    products = models.ManyToManyField(Product, related_name='product_whilist')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Order(models.Model):
+    user = models.ForeignKey(USER, on_delete=models.CASCADE, related_name='user_orders', null=True)
+    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, related_name='order_cart')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name='order_product')
+    quantity = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=7, decimal_places=3, blank=False)
+
+    class Meta:
+        verbose_name = 'Order Item'

@@ -1,4 +1,5 @@
-<footer class="text-center text-lg-start text-muted mt-3" style="background-color: #f5f5f5;">
+{% load static %}
+<footer class="text-center text-lg-start text-muted mt-3" style="background-color: #f5f5f5;min-width:300px">
     <!-- Section: Links  -->
     <section class="">
         <div class="container text-center text-md-start pt-4 pb-4">
@@ -7,11 +8,11 @@
                 <!-- Grid column -->
                 <div class="col-12 col-lg-3 col-sm-12 mb-2">
                     <!-- Content -->
-                    <a href="https://mdbootstrap.com/" target="_blank" class="">
-                        <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
+                    <a href="/"  class="">
+                        <img src="{% static 'image/logo.png' %}" height="40" />
                     </a>
                     <p class="mt-2 text-dark">
-                        © 2023 Copyright: MDBootstrap.com
+                        © 2023 Copyright: UnifyStore.com
                     </p>
                 </div>
                 <!-- Grid column -->
@@ -23,9 +24,9 @@
                         Store
                     </h6>
                     <ul class="list-unstyled mb-4">
-                        <li><a class="text-muted" href="#">About us</a></li>
+                        <li><a class="text-muted" href="/">About us</a></li>
                         <li><a class="text-muted" href="#">Find store</a></li>
-                        <li><a class="text-muted" href="#">Categories</a></li>
+                        <li><a class="text-muted" href="/categories/">Categories</a></li>
                         <li><a class="text-muted" href="#">Blogs</a></li>
                     </ul>
                 </div>

@@ -1,5 +1,4 @@
 from django.contrib.auth.views import LoginView
-from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -98,9 +97,14 @@ class VerifyOTPView(View):
 
 class AccountProfile(UpdateView):
     model = User
-    template_name = 'Profile/profile.html'
     form_class = UserUpdateFrom
+    template_name = 'Profile/profile.html'
+    success_url = reverse_lazy('profile')
 
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    
 def get_user_id(request):
     if request.method == 'POST':
         email_input = request.POST.get('email')

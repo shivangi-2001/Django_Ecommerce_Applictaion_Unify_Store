@@ -33,15 +33,31 @@
             {% for product in new_products %}
             <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
                 <div class="card w-100 my-2 shadow-2-strong">
-                    <img src="{{ product.image.url }}"
-                        class="card-img-top" style="aspect-ratio: 1 / 1" />
+                    <img src="{{ product.image.url }}" class="card-img-top" style="aspect-ratio: 1 / 1" />
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{product.title}} - {{ product.collection.title }}</h5>
                         <p class="card-text">${{ product.unit_price }}</p>
                         <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                            <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                    class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                            <a href="{% url 'add_to_cart' pk=product.id %}" class="btn btn-primary shadow-0 me-1">Add to
+                                cart</a>
+                            {% if product.id in wishlist_products %}
+                            <form method="POST" action="/wishlist">
+                                {% csrf_token %}
+                                <input type="text" name="product_id" value={{product.id}} hidden="">
+                                <button type="submit" class="btn btn-light border icon-hover px-2 pt-2"
+                                    name="remove_wish">
+                                    <i class="fas fa-heart fa-lg text-danger px-1"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <form method="POST" action="/wishlist">
+                                {% csrf_token %}
+                                <input type="text" name="product_id" value={{product.id}} hidden="">
+                                <button type="submit" class="btn btn-light border icon-hover px-2 pt-2">
+                                    <i class="fas fa-heart fa-lg text-secondary px-1"></i>
+                                </button>
+                            </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -156,7 +172,7 @@
                 <article>
                     <a href="#" class="img-fluid">
                         <img class="rounded w-100"
-                            src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/posts/1.webp"
+                            src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
                             style="object-fit: cover;" height="160" />
                     </a>
                     <div class="mt-2 text-muted small d-block mb-1">
@@ -176,7 +192,7 @@
                 <article>
                     <a href="#" class="img-fluid">
                         <img class="rounded w-100"
-                            src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/posts/2.webp"
+                            src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
                             style="object-fit: cover;" height="160" />
                     </a>
                     <div class="mt-2 text-muted small d-block mb-1">
@@ -184,7 +200,7 @@
                             <i class="fa fa-calendar-alt fa-sm"></i>
                             13.12.2022
                         </span>
-                        <a href="#">
+                        <a href="#">>
                             <h6 class="text-dark">How we handle shipping</h6>
                         </a>
                         <p>When you enter into any new area of science, you almost reach</p>
@@ -196,7 +212,7 @@
                 <article>
                     <a href="#" class="img-fluid">
                         <img class="rounded w-100"
-                            src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/posts/3.webp"
+                            src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
                             style="object-fit: cover;" height="160" />
                     </a>
                     <div class="mt-2 text-muted small d-block mb-1">
@@ -216,7 +232,7 @@
                 <article>
                     <a href="#" class="img-fluid">
                         <img class="rounded w-100"
-                            src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/posts/4.webp"
+                            src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
                             style="object-fit: cover;" height="160" />
                     </a>
                     <div class="mt-2 text-muted small d-block mb-1">
