@@ -11,13 +11,26 @@
     <div class="col-lg-9">
       <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
         <strong class="d-block py-2">{{ count }} result found</strong>
-        <div class="ms-auto">
-          <select class="form-select d-inline-block w-auto border pt-1">
-            <option value="0">Best match</option>
-            <option value="1">Recommended</option>
-            <option value="2">High rated</option>
-            <option value="3">Randomly</option>
-          </select>
+       
+        <div class="d-md-flex ms-auto">
+          <div class="me-md-3">
+            <form method="get">
+              <!-- Preserve existing query params -->
+              {% for key, value in request.GET.items %}
+                {% if key != "ordering" %}
+                  <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+              {% endfor %}
+            
+              <!-- Ordering -->
+              <select class="form-select  border pt-1" id="id_ordering" name="ordering">
+                <option value="-unit_price" {% if request.GET.ordering == "-unit_price" %}selected{% endif %}>Price High to Low</option>
+                <option value="unit_price" {% if request.GET.ordering == "unit_price" %}selected{% endif %}>Price Low to High</option>
+                <option value="inventory" {% if request.GET.ordering == "inventory" %}selected{% endif %}>Selling Fast</option>
+                <option value="-inventory" {% if request.GET.ordering == "-inventory" %}selected{% endif %}>High Stock</option>
+              </select>
+            </form>
+          </div>
           <div class="btn-group shadow-0 border">
             <a href="#" class="btn btn-light" title="List view" id="anchor_list_view">
               <i class="fa fa-bars fa-lg"></i>
@@ -32,7 +45,7 @@
       <div id="grid_view">
         <div class="row">
           {% for product in product_list %}
-          <div class="col-lg-4 col-md-6 col-sm-6 d-flex">
+          <div class="col-lg-4 col-md-6 col-sm-6 d-flex" id="product-{{ product.id }}">
             <div class="card w-100 my-2 shadow-2-strong">
               <a href="/products/{{ product.id }}">
                 <img src="{{ product.image.url }}" class="card-img-top" />
@@ -158,6 +171,12 @@
     list_view.style.display = 'none';
     grid_view.style.display = 'block';
   });
+
+  const ordering_select = document.querySelector('#id_ordering');
+
+  ordering_select.addEventListener('change', () => {
+    ordering_select.form.submit();
+  })
 </script>
 {% include 'layout/footer.html' %}
 

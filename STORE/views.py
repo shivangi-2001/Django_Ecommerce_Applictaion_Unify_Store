@@ -46,7 +46,6 @@ class ProductGallery(ListView):
     form_class = ProductForm
     paginate_by = 20
     filterset_class = ProductFilter
-    filterset_fields = ['collection_id', 'unit_price']
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -58,6 +57,7 @@ class ProductGallery(ListView):
         context['filter'] = self.filterset
         context['count'] = self.get_queryset().count()
         context['collections'] = Collection.objects.all()
+        # print(context['filter'])
 
         context['active_collection_id'] = self.request.GET.get('collection_id')
         if self.request.user.is_authenticated:
