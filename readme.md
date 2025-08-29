@@ -1,7 +1,5 @@
 # Unify Store: A Django E-commerce Application
 
-![logo](static/image/logo.png) 
-
 ---
 
 ## Description
