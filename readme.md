@@ -1,7 +1,5 @@
 # Unify Store: A Django E-commerce Application
 
----
-
 ## Description
 **Unify Store** is a comprehensive e-commerce platform built with the Django framework. 
 The application mimics core functionalities of major online retail platforms, including 
@@ -11,7 +9,6 @@ While the current version handles all transactional logic. This project serves a
 
 ![p-4](photos/shop.gif)
 
----
 
 ## Table of Content
 
@@ -47,7 +44,6 @@ While the current version handles all transactional logic. This project serves a
 8. [Contact](#contact)
 
 
----
 
 # Project Overview
 
@@ -76,7 +72,6 @@ The following features are planned for future implementation:
 - **Payment Gateway Integration:** Integrating secure payment solutions like Stripe or PayPal.
 - **Advanced Functionality:** Adding features such as a user review system, product recommendations, or an admin dashboard.
 
----
 
 # Getting Started
 
@@ -158,7 +153,6 @@ python manage.py runserver
 
 ![photo-6](photos/p-6.png)
 
----
 
 # Technologies Used
 
@@ -189,7 +183,6 @@ python manage.py runserver
 - **`sqlparse (version 0.5.3):`** A non-validating SQL parser used for formatting and analysis.
 
 
----
 
 
 # Project Structure
@@ -351,7 +344,6 @@ The application implements a secure password reset mechanism with tokenized link
 
 | ![photo-14](photos/p-14.png) | ![photo-10](photos/p-10.png) |
 |-------------------------------|-------------------------------|
----
 
 
 
@@ -395,7 +387,6 @@ These endpoints manage the shopping cart, wishlist, and the order creation proce
 
 # License
 
----
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Django](https://img.shields.io/badge/Django-5.2.5-green)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
@@ -404,7 +395,6 @@ This project is licensed under the MIT License. See the LICENSE.md file for deta
 
 # Contact
 
----
 **Email:** `shivangikeshri21@gmail.com`
 
 
