@@ -156,6 +156,7 @@ DEFAULT_AUTO_EMAIL = 'no_repy@ecommerce.com'
 
 OTP_EMAIL_BODY_HTML_TEMPLATE_PATH = 'email/send_otp.html'
 OTP_EMAIL_TOKEN_VALIDITY = 300  # 5 minutes
+OTP_EMAIL_SUBJECT = "✨ Welcome! Verify Your Account from Unify Store" 
 OTP_LOGIN_ATTEMPT = 3
 EMAIL_RESET_TIME = 30
 

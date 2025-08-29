@@ -1,12 +1,11 @@
 from typing import Any
 from django.contrib.auth import get_user_model
-from django.db import  transaction
 from django.http import JsonResponse
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, get_list_or_404, redirect
-from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, TemplateView, DeleteView
-from rest_framework.viewsets import ModelViewSet
+from django.views.generic import ListView, DetailView, TemplateView, DeleteView, CreateView
+
 import datetime
 
 from .filters import ProductFilter
@@ -15,15 +14,7 @@ from .models import Product, Collection, Cart, CartItem, Wishlist, Order, OrderI
 from .serializer import ProductSerializer, CollectionSerializer
 
 
-user = get_user_model()
-
-class CollectionViewSet(ModelViewSet):
-    queryset = Collection.objects.all()
-    serializer_class = CollectionSerializer
-
-class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+USER = get_user_model()
 
 class WelcomePage(TemplateView):
     template_name = 'index.html'
@@ -34,7 +25,6 @@ class WelcomePage(TemplateView):
             wishlist = Wishlist.objects.get_or_create(user=self.request.user)[0]
             context['wishlist_products'] = wishlist.products.values_list('id', flat=True)
         return context
-
   
 class CategoriesView(ListView):
     model = Collection
@@ -112,28 +102,33 @@ def serach_product_collection(request):
         else:
             return JsonResponse("Does not have any Template for these route")
 
-
+# ---------------- ADD TO CART ----------------
 def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    try:
-        product_quantity = int(request.POST.get("quantity", 1))
-    except ValueError:
-        product_quantity = 1
-    cart, created = Cart.objects.get_or_create(user_id=request.user.id)
-    cart_item, cart_item_created = CartItem.objects.get_or_create(cart=cart, product=product)
-    if cart_item_created:
-        cart_item.quantity = product_quantity
+    quantity = int(request.POST.get("quantity", 1)) if request.POST.get("quantity") else 1
+
+    # Find or create correct cart
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
     else:
-        cart_item.quantity += product_quantity
+        if not request.session.session_key:
+            request.session.create()
+        cart, _ = Cart.objects.get_or_create(session_id=request.session.session_key)
+
+    # Add or update item
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if created:
+        cart_item.quantity = quantity
+    else:
+        cart_item.quantity += quantity
     cart_item.save()
-    referring_url = request.META.get('HTTP_REFERER', '/')
-    return redirect(referring_url)
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))
 
 
-class CartView(ListView):
-    model = Cart
+# ---------------- CART VIEW ----------------
+class CartView(TemplateView):
     template_name = 'Cart/cart_view.html'
-    paginate_by = 6
 
     def get_cart(self):
         if self.request.user.is_authenticated:
@@ -144,70 +139,62 @@ class CartView(ListView):
             cart, _ = Cart.objects.get_or_create(session_id=self.request.session.session_key)
         return cart
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart = self.get_cart()
-        cartItems = CartItem.objects.filter(cart=cart)
+        cart_items = CartItem.objects.filter(cart=cart).select_related("product")
+
         cart_products = [
             {
-                "id": cart_item.id,
-                "product": cart_item.product,
-                "quantity": cart_item.quantity,
-                "total_count": float(cart_item.product.unit_price * cart_item.quantity),
+                "id": item.id,
+                "product": item.product,
+                "quantity": item.quantity,
+                "total_count": float(item.product.unit_price * item.quantity),
             }
-            for cart_item in cartItems
+            for item in cart_items
         ]
 
-        context['cart_products'] = cart_products
-        context['total_value'] = sum(item['total_count'] for item in cart_products)
-        print(context)
+        context["cart_products"] = cart_products
+        context["total_value"] = sum(item["total_count"] for item in cart_products)
         return context
 
 
-def Increase_quantity_cartItems(request, cart_items_id):
-        current_product = get_object_or_404(CartItem, id=cart_items_id)
-        current_product.quantity += 1
-        current_product.save()
-        referring_url = request.META.get('HTTP_REFERER', '/')
-        return redirect(referring_url)
+# ---------------- QUANTITY UPDATE ----------------
+def increase_quantity(request, cart_items_id):
+    cart = _get_current_cart(request)
+    cart_item = get_object_or_404(CartItem, id=cart_items_id, cart=cart)
+    cart_item.quantity += 1
+    cart_item.save()
+    return redirect(request.META.get("HTTP_REFERER", "/"))
 
-def Decrease_qunatity_cartItems(request, cart_items_id):
-    current_product = get_object_or_404(CartItem, id=cart_items_id)
-    current_product.quantity -= 1
-    current_product.save()
-    if current_product.quantity == 0:
-        current_product.delete()
-    referring_url = request.META.get('HTTP_REFERER', '/')
-    return redirect(referring_url)
+def decrease_quantity(request, cart_items_id):
+    cart = _get_current_cart(request)
+    cart_item = get_object_or_404(CartItem, id=cart_items_id, cart=cart)
+    cart_item.quantity -= 1
+    if cart_item.quantity <= 0:
+        cart_item.delete()
+    else:
+        cart_item.save()
+    return redirect(request.META.get("HTTP_REFERER", "/"))
 
 
-class DeleteCartItem(DeleteView):
-    model = CartItem
-    template_name = 'Cart/cart_view.html'
+# ---------------- DELETE ITEM ----------------
+def delete_cart_item(request, cart_item_id):
+    cart = _get_current_cart(request)
+    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart=cart)
+    cart_item.delete()
+    return redirect("user_cart")
 
-    def get_success_url(self):
-        # If user is logged in → redirect to their cart
-        if self.request.user.is_authenticated:
-            return reverse_lazy('user_cart')
 
-        # If guest user → redirect to session cart
-        return reverse_lazy('session_cart')
-    
-    # def post(self, request, pk):
-    #     # Get the right cart (user or session)
-    #     if request.user.is_authenticated:
-    #         cart, _ = Cart.objects.get_or_create(user=request.user)
-    #     else:
-    #         if not request.session.session_key:
-    #             request.session.create()
-    #         cart, _ = Cart.objects.get_or_create(session_id=request.session.session_key)
-
-    #     # Now delete ONLY if the item belongs to THIS cart
-    #     cart_item = get_object_or_404(CartItem, pk=pk, cart=cart)
-    #     cart_item.delete()
-
-    #     return redirect("user_cart") 
-
+# ---------------- HELPER ----------------
+def _get_current_cart(request):
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+    else:
+        if not request.session.session_key:
+            request.session.create()
+        cart, _ = Cart.objects.get_or_create(session_id=request.session.session_key)
+    return cart
 
 class ViewWishlist(View):
     def get(self, request):
@@ -237,43 +224,69 @@ class ViewWishlist(View):
             wishlist.products.add(product)
         referring_url = request.META.get('HTTP_REFERER', '/')
         return redirect(referring_url)
+    
 
-def CreateOrder(request):
-        context = {}
-        if request.method == 'POST':
-            user_id = request.user.id
-            cart = get_object_or_404(Cart, user_id=user_id)
-            total_amount = request.POST.get('total_amount')
+class CreateOrder(View):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            messages.info(request, "You need to login to checkout")
+        current_user = get_object_or_404(USER, email=request.user)
 
-            with transaction.atomic():
-                if float(total_amount) > 0:
-                    order_created, created = Order.objects.get_or_create(user_id=user_id, cart=cart,
-                                                                         total_amount=total_amount)
+        current_user = get_object_or_404(USER, email=request.user)
+        cart = _get_current_cart(request)
+        cart_items = CartItem.objects.filter(cart=cart).select_related("product")
 
-                    cart_items = CartItem.objects.filter(cart=cart)
+        if not cart_items.exists():
+            messages.info(request, "Your cart is empty. Please add items to your cart before placing an order.")
+            return redirect('products')
 
-                    # Calculate total price for each product in the cart
-                    product_totals = []
-                    for cart_item in cart_items:
-                        product_total = cart_item.product.unit_price * cart_item.quantity
-                        product_totals.append({'product': cart_item.product, 'total_price': product_total})
-                        OrderItem.objects.get_or_create(
-                            order=order_created,
-                            product=cart_item.product,
-                            quantity=cart_item.quantity,
-                            unit_price=cart_item.product.unit_price
-                        )
+        product_cost = sum(item.product.unit_price * item.quantity for item in cart_items)
 
-                    # Calculate the overall sum of item prices
-                    overall_sum = sum(product_total['total_price'] for product_total in product_totals)
-                    context['count'] = len(product_totals)
-                    context['products'] = product_totals
-                    context['overall_sum'] = overall_sum
-                else:
-                    help_text = "Add Product into your Cart"
-                    context['help_text'] = help_text
-
-            return render(request, template_name='Checkout/checkout_form.html', context=context)
+        total_price = product_cost
+        shipping_cost=0
+        if(total_price<50):
+            shipping_cost=9
+            total_price+=shipping_cost
 
 
+        print(total_price, shipping_cost, )
+        
+        return render(request, template_name="Order/checkout_form.html", context={"user": current_user,"product_cost": product_cost, "total_price": total_price, "shipping_cost": shipping_cost})
 
+    def post(self, request):
+        if not request.user.is_authenticated:
+            messages.info(request, "You need to login to checkout")
+            return redirect('index')
+        
+        current_user = get_object_or_404(USER, email=request.user)
+        cart = _get_current_cart(request)
+        cart_items = CartItem.objects.filter(cart=cart).select_related("product")
+
+        if not cart_items.exists():
+            messages.info(request, "Your cart is empty. Please add items to your cart before placing an order.")
+            return redirect('products')
+
+        total_price = sum(item.product.unit_price * item.quantity for item in cart_items)
+
+        # Create Order
+        order = Order.objects.create(user=current_user, total_price=total_price, cart=cart)
+
+        # Create OrderItems
+        order_items = [
+            OrderItem(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                unit_price=item.product.unit_price
+            )
+            for item in cart_items
+        ]
+        OrderItem.objects.bulk_create(order_items)
+
+        # Clear Cart
+        cart_items.delete()
+
+        messages.success(request, "Your order has been placed successfully!")
+        return redirect('index')
+
+  

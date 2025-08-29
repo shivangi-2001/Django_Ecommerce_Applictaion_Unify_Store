@@ -1,6 +1,5 @@
 {% extends 'layout/base.html' %} {% block content %}
 
-
 <section class="vh-100 bg-image" style="background-color: #eee">
   <img
     src="https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp"
@@ -15,16 +14,14 @@
               {% if messages %}
               <div class="messages">
                 {% for message in messages %}
-                  <p class="alert 
-                            {% if message.tags == 'error' %}alert-danger
-                            {% elif message.tags == 'warning' %}alert-warning
-                            {% elif message.tags == 'success' %}alert-success
-                            {% else %}alert-info{% endif %}">
-                    {{ message }}
-                  </p>
+                <p
+                  class="alert {% if message.tags == 'error' %}alert-danger {% elif message.tags == 'warning' %}alert-warning {% elif message.tags == 'success' %}alert-success {% else %}alert-info{% endif %}"
+                >
+                  {{ message }}
+                </p>
                 {% endfor %}
               </div>
-            {% endif %}
+              {% endif %}
               <!-- Pills navs -->
               <ul
                 class="nav nav-pills nav-justified mb-3"
@@ -129,7 +126,14 @@
 
                       <div class="col-md-6 d-flex justify-content-center">
                         <!-- Simple link -->
-                        <a href="#!">Forgot password?</a>
+                        <a
+                          data-mdb-button-init
+                          data-mdb-ripple-init
+                          type="button"
+                          data-mdb-modal-init
+                          data-mdb-target="#forgetPasswordModal"
+                          >Forgot password?</a
+                        >
                       </div>
                     </div>
 
@@ -154,6 +158,39 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal top fade"
+    id="forgetPasswordModal"
+    tabindex="-1"
+    aria-labelledby="forgetPasswordModalLabel"
+    aria-hidden="true"
+    data-mdb-backdrop="true"
+    data-mdb-keyboard="true"
+  >
+    <div class="modal-dialog" style="width: 300px">
+      <div class="modal-content text-center">
+        <div class="modal-header h5 text-white bg-primary justify-content-center" >
+          Password Reset
+        </div>
+        <div class="modal-body px-5">
+          <p class="py-2">
+            Enter your email address and we'll send you an email with
+            instructions to reset your password.
+          </p>
+          <form method="POST" action="{% url 'password_reset_request' %}">
+            {% csrf_token %}
+            <div data-mdb-input-init class="form-outline">
+              <input type="email" name="email" maxlength="320" placeholder="email@domain.com"  class="form-control my-3"
+              required aria-invalid="true" aria-describedby="id_email_error" id="id_email"  autocomplete="off"/>
+              <label class="form-label" for="typeEmail">Email input</label>
+            </div>
+          
+            <button type="submit" class="btn btn-primary mb-4">Send Reset Link</button>
+          </div>
       </div>
     </div>
   </div>

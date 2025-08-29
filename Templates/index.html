@@ -4,6 +4,17 @@
 {% include 'partials/navbar.html' %}
 
 <div class="bg-primary text-white py-5">
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <p
+        class="alert {% if message.tags == 'error' %}alert-danger {% elif message.tags == 'warning' %}alert-warning {% elif message.tags == 'success' %}alert-success {% else %}alert-info{% endif %}"
+      >
+        {{ message }}
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="container py-5">
         <h1>
             Best products & <br />

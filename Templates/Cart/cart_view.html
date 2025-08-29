@@ -3,6 +3,17 @@
 
 <section class="bg-light my-5">
   <div class="container">
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <p
+        class="alert {% if message.tags == 'error' %}alert-danger {% elif message.tags == 'warning' %}alert-warning {% elif message.tags == 'success' %}alert-success {% else %}alert-info{% endif %}"
+      >
+        {{ message }}
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="row">
       <div class="col-lg-9">
         <div class="card border shadow-0">
@@ -70,7 +81,6 @@
               </div>
               <div class="col">
                 <div class="d-inline-flex float-md-end">
-                  {{user.id}}
                   <form
                     action="{% url 'delete_cart_item' user_id=user.id pk=product.id %}"
                     method="post"
@@ -94,6 +104,17 @@
             >
             {% endif %}
           </div>
+
+          {% if not user.is_authenticated %}
+          <h5 class="mx-4">
+            You are not logged in?<a
+              href="{% url 'login' %}"
+              class="mx-1 btn btn-outline-primary"
+              >Login</a
+            >
+          </h5>
+          {% endif %}
+
           <div class="border-top pt-4 mx-4 mb-4">
             <p>
               <i class="fas fa-truck text-muted fa-lg"></i> Free Delivery within
@@ -127,6 +148,8 @@
             </form>
           </div>
         </div>
+
+        <!-- form to proceed to checkout -->
         <div class="card shadow-0 border">
           <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -147,10 +170,15 @@
               <p class="mb-2 fw-bold">${{total_value}}</p>
             </div>
             <div class="mt-3">
-              <a href="#" class="btn btn-success w-100 shadow-0 mb-2">
+              <a
+                {% if not user.is_authenticated %} disabled {% endif %}
+                data-mdb-ripple-color="dark"
+                href="{% url 'place_order' %}"
+                class="btn btn-success w-100 shadow-0 mb-2"
+              >
                 Make Purchase
-              </a>
-              <a href="#" class="btn btn-light w-100 border mt-2">
+            </a>
+              <a href="/" class="btn btn-light w-100 border mt-2">
                 Back to shop
               </a>
             </div>

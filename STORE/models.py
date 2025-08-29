@@ -34,7 +34,6 @@ class Cart(models.Model):
     session_id = models.CharField(max_length=40, null=True, blank=True, unique=True)
 
 
-
 class CartItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
@@ -49,6 +48,7 @@ class Wishlist(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(USER, on_delete=models.CASCADE, related_name='user_orders', null=True)
+    # address = models.OneToOneField('PROFILE.UserAddress', on_delete=models.SET_NULL, null=True, related_name='order_address')
     cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, related_name='order_cart')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)

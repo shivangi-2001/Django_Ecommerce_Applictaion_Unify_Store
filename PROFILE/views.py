@@ -1,19 +1,20 @@
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 from django_otp.plugins.otp_email.models import EmailDevice
 
 from datetime import timedelta
+from urllib.parse import quote
 
-from PROFILE.forms import UserRegistrationForm, UserAuthenticationLogin, UserUpdateFrom
+from PROFILE.forms import UserRegistrationForm, UserAuthenticationLogin, UserUpdateFrom, PasswordResetRequestForm, SetPassword
 from PROFILE.models import User
-
-import zoneinfo
+from PROFILE.forgetpasswordtoken import reset_password_token
 
 
 
@@ -22,6 +23,7 @@ class Login(LoginView):
     template_name = 'Profile/login.html'
     success_url = reverse_lazy('index')
     redirect_authenticated_user = True
+
 
 class RegisterView(CreateView):
     model = User
@@ -164,13 +166,22 @@ class VerifyAccount(View):
         device, created = EmailDevice.objects.get_or_create(user=user, name="default")
 
         # Resend OTP if not sent recently
-        if not device.confirmed or device.last_generated_timestamp is None or timezone.now() > device.last_generated_timestamp + timedelta(minutes=2):
+        if (
+            not device.confirmed
+            or device.last_generated_timestamp is None
+            or timezone.now() > device.last_generated_timestamp + timedelta(minutes=2)
+        ):            
             device.generate_challenge()  # send OTP
-            device.last_t = timezone.now()
             device.save()
+
+            # FIX: update user last_otp_sent for expiry tracking
+            user.last_otp_sent = timezone.now()
+            user.save(update_fields=["last_otp_sent"])
+
             messages.info(request, "We have sent you a new OTP.")
 
         return render(request, "Profile/verify_otp.html", get_otp_context(user))
+
 
 class AccountProfile(UpdateView):
     model = User
@@ -180,3 +191,78 @@ class AccountProfile(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+  
+
+def password_reset_request(request):
+    login_form = UserAuthenticationLogin()
+    reset_form = PasswordResetRequestForm(request.POST or None)
+
+    if request.method == "POST" and reset_form.is_valid():
+        email = reset_form.cleaned_data['email']
+        try:
+            user = User.objects.get(email=email, is_active=True)
+        except User.DoesNotExist:
+            messages.success(request, "Password reset link sent to your email.")
+            return redirect('login')
+
+        # Check cooldown: 3 minutes
+        if user.last_password_link_sent and timezone.now() < user.last_password_link_sent + timedelta(minutes=3):
+            remaining = (user.last_password_link_sent + timedelta(minutes=30) - timezone.now()).seconds
+            messages.error(
+                request, 
+                f"Please wait {remaining // 60} minutes and {remaining % 60} seconds before requesting another link."
+            )
+            return render(request, "Profile/login.html", {'form': login_form, 'password_reset_form': reset_form})
+
+        # Generate token and send email
+        token = reset_password_token.make_token(user)
+        reset_url = request.build_absolute_uri(
+            reverse('password_reset_confirm', kwargs={'email': quote(user.email), 'token': token})
+        )
+        send_mail(
+            "🔐 Password Reset Request from Unify Store",
+            f"Click the link to reset your password (valid for 30 minutes): {reset_url}",
+            "shivangikeshri21@gmail.com",
+            [user.email],
+            fail_silently=False
+        )
+
+        user.reset_timer = timezone.now()  # track 30-min expiry for token
+        user.last_password_link_sent = timezone.now()  # track 3-min cooldown
+        user.save()
+
+        messages.success(request, "Password reset link sent to your email.")
+
+    return render(request, "Profile/login.html", {'form': login_form, 'password_reset_form': reset_form})
+
+
+def password_reset_confirm(request, email, token):
+    email = email.replace('%40', '@') 
+    user = get_object_or_404(User, email=email, is_active=True)
+
+    # Token and 30-min expiration check
+    if not reset_password_token.check_token(user, token):
+        messages.error(request, "The password reset link is invalid")
+        form = SetPassword(user)  # unbound form
+        return render(request, "Profile/reset_password.html", {'form': form})
+
+    if user.reset_timer and timezone.now() > user.reset_timer + timedelta(minutes=30):
+        messages.error(request, "The password reset link has expired.")
+        form = SetPassword(user)
+        return render(request, "Profile/reset_password.html", {'form': form})
+
+    if request.method == "POST":
+        form = SetPassword(user, request.POST)
+        if form.is_valid():
+            form.save()
+            user.reset_timer = None
+            user.save()
+            messages.success(request, "Your password has been reset successfully.")
+            return redirect('login')
+    else:
+        form = SetPassword(user) 
+
+    return render(request, "Profile/reset_password.html", {'form': form})
+
+
+# Add Address View

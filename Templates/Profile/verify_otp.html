@@ -9,10 +9,6 @@
                     <div class="card-body p-md-5">
                         <div class="row justify-content-center">
                             <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                                {% if info %}
-                                <div class="alert alert-warning">{{ info }}</div>
-                                <br/>
-                                {% endif %}
 
                                 <p class="text-center h1 fw-bold mb-5 mx-1  mt-4">Enter OTP</p>
                                 <p class="text-center lead">
@@ -40,7 +36,7 @@
                                         <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
                                             {% for i in '123456' %}
                                             <input class="m-2 text-center form-control rounded otp-input" type="text"
-                                                name="otp_{{ i }}" id="otp_{{ i }}" maxlength="1" />
+                                                name="otp_{{ i }}" id="otp_{{ i }}" maxlength="1" autocomplete="off" required/>
                                             {% endfor %}
                                         </div>
                                     </div>
