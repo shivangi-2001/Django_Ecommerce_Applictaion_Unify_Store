@@ -146,24 +146,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'PROFILE.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = 'localhost'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = 2525
-DEFAULT_AUTO_EMAIL = 'no_reply@ecommerce.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'shivangikeshri21@gmail.com'
+EMAIL_HOST_PASSWORD = 'ujpm zqvg czwz muaw'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_AUTO_EMAIL = 'no_repy@ecommerce.com'
 
 
 OTP_EMAIL_BODY_HTML_TEMPLATE_PATH = 'email/send_otp.html'
-OTP_EMAIL_TOKEN_VALIDITY = 300
-
+OTP_EMAIL_TOKEN_VALIDITY = 300  # 5 minutes
+OTP_LOGIN_ATTEMPT = 3
+EMAIL_RESET_TIME = 30
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'create_user'
 
 
-OTP_LOGIN_ATTEMPT = 3
-EMAIL_RESET_TIME = 30
 
 AUTO_LOGOUT = {
     'IDLE_TIME': timedelta(minutes=5),

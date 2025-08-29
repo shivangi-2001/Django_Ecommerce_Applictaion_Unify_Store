@@ -1,5 +1,4 @@
-from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import validate_email
@@ -12,8 +11,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
     email = models.EmailField(unique=True, max_length=100, validators=[validate_email])
-    otp = models.CharField(max_length=6, null=True, unique=True)
     reset_timer = models.DateTimeField(null=True, blank=True)
+    otp_attempts = models.IntegerField(default=3)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -22,7 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(
         _("active"),
-        default=True,
+        default=False,
         help_text=_(
             "Designates whether this user should be treated as active. "
             "Unselect this instead of deleting accounts."

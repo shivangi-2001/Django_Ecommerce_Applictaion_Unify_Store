@@ -8,8 +8,8 @@ from .views import (CollectionViewSet, CategoriesView, ProductViewSet, ProductGa
                     Decrease_qunatity_cartItems, CreateOrder)
 
 router = DefaultRouter()
-router.register(r'product', ProductViewSet, basename='product')
-router.register(r'collection', CollectionViewSet, basename='collection')
+router.register(r'api/product', ProductViewSet, basename='product')
+router.register(r'api/collection', CollectionViewSet, basename='collection')
 
 urlpatterns = [
     path('', WelcomePage.as_view(), name='index'),

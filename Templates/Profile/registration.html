@@ -19,7 +19,7 @@
 
                   {% csrf_token %}
                   {% if form.errors %}
-                  {{ form.errors }}
+                  <li class="list-group-item text-danger" >{{ form.errors }}</li>
                   {% endif %}
 
                   {% if error_message %}
@@ -82,7 +82,7 @@
 <section>
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form method="POST" action="{% url 'get_user_id' %}">
+    <form method="GET" action="{% url 'verify_account' %}">
       {% csrf_token %}
       <div class="modal-content">
       <div class="modal-header">
@@ -91,10 +91,10 @@
       </div>
       <div class="modal-body">
         <label class="form-label">Email:</label>
-          <input class="form-control" name="email" required>
+          <input class="form-control" name="email" autocomplete="off" required/>
       </div>
       <div class="modal-footer">
-        <button type="submit" name="email_btn" class="btn btn-primary" data-mdb-ripple-init>Continue</button>
+        <button type="submit" name="email_btn" class="btn btn-primary" data-mdb-ripple-init>Send OTP</button>
       </div>
     </div>
     </form>

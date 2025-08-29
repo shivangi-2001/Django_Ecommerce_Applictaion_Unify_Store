@@ -21,16 +21,10 @@ class UserRegistrationForm(BaseUserCreationForm):
         fields = ['email', 'password1', 'password2']
 
     def save(self, commit=True):
-        user = super().save(commit=True)
+        user = super().save(commit=False)
         if commit:
             user.save()
-            # call send otp()
         return user
-
-class OTPVerificationForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['otp']
 
 
 class UserUpdateFrom(forms.ModelForm):

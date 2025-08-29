@@ -36,11 +36,11 @@
                                     <input type="hidden" name="otp" id="id_otp">
 
                                     {% if form.errors.otp %}
-                                    <div class="alert alert-danger">{{ form.errors.otp }}</div>
+                                    <div class="alert text-danger">{{ form.errors.otp }}</div>
                                     {% endif %}
 
                                     {% if error_message %}
-                                    <div class="alert alert-danger">{{ error_message }}</div>
+                                    <div class="alert text-danger">{{ error_message }}</div>
                                     {% endif %}
 
                                     {% if messages %}
