@@ -1,7 +1,5 @@
-{% extends 'layout/base.html' %}
-{% block content %}
-{% include 'layout/header.html' %}
-{% include 'partials/navbar.html' %}
+{% extends 'layout/base.html' %} {% block content %} 
+{% include 'layout/header.html' %} {% include 'partials/navbar.html' %}
 
 <section class="bg-light my-5">
   <div class="container">
@@ -14,14 +12,13 @@
             <div class="row gy-3 mb-4 shadow-3 p-3">
               <div class="col">
                 <img
-                  src="{{product.product_id.image.url}}"
+                  src="{{product.product.image.url}}"
                   class="border rounded me-3"
                   style="width: 96px; height: 96px"
                 />
               </div>
               <div class="col">
-                <a href="#" class="nav-link">{{product.product_id.title}}</a>
-                <p class="text-muted">Blue, Medium</p>
+                <a href="#" class="nav-link">{{product.product.title}}</a>
               </div>
               <div class="col">
                 <div class="d-inline-flex">
@@ -68,11 +65,12 @@
                 <text class="h6">${{ product.total_count }}</text>
                 <br />
                 <small class="text-muted text-nowrap">
-                  ${{ product.product_id.unit_price }} / per item
+                  ${{ product.product.unit_price }} / per item
                 </small>
               </div>
               <div class="col">
                 <div class="d-inline-flex float-md-end">
+                  {{user.id}}
                   <form
                     action="{% url 'delete_cart_item' user_id=user.id pk=product.id %}"
                     method="post"
@@ -80,8 +78,11 @@
                     {% csrf_token %}
                     <button
                       type="submit"
-                      class="btn btn-outline-danger btn-floating btn-close"
-                    ></button>
+                      class="btn btn-outline-danger btn-floating"
+                      title="Delete item from cart"
+                    >
+                      <icon class="fas fa-trash"></icon>
+                    </button>
                   </form>
                 </div>
               </div>

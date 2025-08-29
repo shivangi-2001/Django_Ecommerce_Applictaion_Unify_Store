@@ -12,6 +12,19 @@
         <div class="col-lg-12 col-xl-11">
           <div class="card text-black" style="border-radius: 25px">
             <div class="card-body p-5">
+              {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                  <p class="alert 
+                            {% if message.tags == 'error' %}alert-danger
+                            {% elif message.tags == 'warning' %}alert-warning
+                            {% elif message.tags == 'success' %}alert-success
+                            {% else %}alert-info{% endif %}">
+                    {{ message }}
+                  </p>
+                {% endfor %}
+              </div>
+            {% endif %}
               <!-- Pills navs -->
               <ul
                 class="nav nav-pills nav-justified mb-3"

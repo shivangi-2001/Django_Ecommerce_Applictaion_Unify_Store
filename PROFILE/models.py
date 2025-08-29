@@ -28,9 +28,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    last_otp_sent = models.DateTimeField(null=True, blank=True)
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ()
 
     objects = UserManager()
+
+    def can_resend_otp(self, cooldown_minutes=2):
+        """
+        Check if user can request another OTP based on cooldown.
+        """
+        if not self.last_otp_sent:
+            return True
+        return timezone.now() > self.last_otp_sent + timezone.timedelta(minutes=cooldown_minutes)
 

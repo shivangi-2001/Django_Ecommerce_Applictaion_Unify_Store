@@ -31,6 +31,9 @@ class Cart(models.Model):
     user = models.ForeignKey(USER, on_delete=models.CASCADE, related_name='user', null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    session_id = models.CharField(max_length=40, null=True, blank=True, unique=True)
+
+
 
 class CartItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)

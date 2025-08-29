@@ -20,16 +20,14 @@
             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                 <div class="accordion-body">
                     <ul class="list-unstyled">
-                        <li><a href="/products/?collection_id=0177fbaf-b54e-474c-9fdb-fb925052f058" class="text-dark">Home items </a></li>
-                        <li><a href="/products/?collection_id=2a71844d-ae1f-4a46-9753-3d8de261b6a9" class="text-dark">Sports & Travel</a></li>
-                        <li><a href="/products/?collection_id=53cfd5d9-4071-47c9-9209-8b0011488744" class="text-dark">Stationary </a></li>
-                        <li><a href="/products/?collection_id=759821dd-b92d-4dbc-9b06-cd307d17bb48" class="text-dark"> Toys</a></li>
-                        <li><a href="/products/?collection_id=9a0f9657-51d8-4b59-a531-78e805d20ff1" class="text-dark">Electronics</a></li>
-                        <li><a href="/products/?collection_id=9f8c1bd7-03de-4546-a02d-551dd8eabf07" class="text-dark">Men's clothing  </a></li>
-                        <li><a href="/products/?collection_id=d30a855c-ce4b-4c37-a8e0-f886a11a5f25" class="text-dark">Women's clothing</a></li>
-                        <li><a href="/products/?collection_id=f05b6914-7625-4540-90f8-cb2440a8eee0" class="text-dark">Accessories</a></li>
-                        <li><a href="/products/?collection_id=f0685900-ac0c-4126-ba10-3948fd37287b" class="text-dark">Interiors items</a></li>
-                        <li><a href="/products/?collection_id=f432744b-8f38-401a-b9c2-d742653cc4d7" class="text-dark">Books, Magazines  </a></li>
+                        {% for collection in collections %}
+                            <li>
+                                <a href="{% url 'products' %}?collection_id={{ collection.id }}"
+                                   class="{% if request.GET.collection_id == collection.id|stringformat:'s' %}text-primary{% else %}text-dark{% endif %}">
+                                    {{ collection.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

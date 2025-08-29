@@ -67,10 +67,13 @@ class ProductGallery(ListView):
         context = super().get_context_data(**kwargs)
         context['filter'] = self.filterset
         context['count'] = self.get_queryset().count()
+        context['collections'] = Collection.objects.all()
+
+        context['active_collection_id'] = self.request.GET.get('collection_id')
         if self.request.user.is_authenticated:
             wishlist = Wishlist.objects.get_or_create(user=self.request.user)[0]
             context['wishlist_products'] = wishlist.products.values_list('id', flat=True)
-            print(context['wishlist_products'])
+            # print(context['wishlist_products'])
         return context
     
 class ProductDetails(DetailView):
@@ -84,7 +87,17 @@ class ProductDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['collection_title'] = self.object.collection.title
+        product = context['product']
+
+        min_price = max(product.unit_price - 20, 0)
+        max_price = product.unit_price + 20
+
+        context["similar_collection"] = Product.objects.filter(
+            collection_id=product.collection.id,
+            inventory__gt=0,
+            unit_price__range=(min_price, max_price)
+        ).exclude(id=product.id)[:4]  # exclude same product + limit results
+
         return context
 
 def serach_product_collection(request):
@@ -99,41 +112,57 @@ def serach_product_collection(request):
         else:
             return JsonResponse("Does not have any Template for these route")
 
+
 def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    try:
+        product_quantity = int(request.POST.get("quantity", 1))
+    except ValueError:
+        product_quantity = 1
     cart, created = Cart.objects.get_or_create(user_id=request.user.id)
     cart_item, cart_item_created = CartItem.objects.get_or_create(cart=cart, product=product)
-    if not cart_item_created:
-        cart_item.quantity += 1
-        cart_item.save()
+    if cart_item_created:
+        cart_item.quantity = product_quantity
+    else:
+        cart_item.quantity += product_quantity
+    cart_item.save()
     referring_url = request.META.get('HTTP_REFERER', '/')
     return redirect(referring_url)
+
 
 class CartView(ListView):
     model = Cart
     template_name = 'Cart/cart_view.html'
     paginate_by = 6
 
+    def get_cart(self):
+        if self.request.user.is_authenticated:
+            cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        else:
+            if not self.request.session.session_key:
+                self.request.session.create()
+            cart, _ = Cart.objects.get_or_create(session_id=self.request.session.session_key)
+        return cart
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        cart_id, created = Cart.objects.get_or_create(user_id=self.request.user.id)
-        cartItems = CartItem.objects.filter(cart_id=cart_id)
-        product_list_id = [(cart_item.id, cart_item.product_id, cart_item.quantity) for cart_item in cartItems]
-        cart_products = []
-        for id, product, quantity in product_list_id:
-            res = {
-                "id": id,
-                "product_id": get_object_or_404(Product, id=product),
-                "quantity": quantity,
-                "total_count": float(get_object_or_404(Product, id=product).unit_price * quantity)
+        context = super().get_context_data(**kwargs)
+        cart = self.get_cart()
+        cartItems = CartItem.objects.filter(cart=cart)
+        cart_products = [
+            {
+                "id": cart_item.id,
+                "product": cart_item.product,
+                "quantity": cart_item.quantity,
+                "total_count": float(cart_item.product.unit_price * cart_item.quantity),
             }
-            cart_products.append(res)
+            for cart_item in cartItems
+        ]
+
         context['cart_products'] = cart_products
-        total_value = 0
-        for cart in cart_products:
-            total_value+= cart['total_count']
-        context['total_value'] = total_value
+        context['total_value'] = sum(item['total_count'] for item in cart_products)
+        print(context)
         return context
+
 
 def Increase_quantity_cartItems(request, cart_items_id):
         current_product = get_object_or_404(CartItem, id=cart_items_id)
@@ -151,12 +180,33 @@ def Decrease_qunatity_cartItems(request, cart_items_id):
     referring_url = request.META.get('HTTP_REFERER', '/')
     return redirect(referring_url)
 
+
 class DeleteCartItem(DeleteView):
     model = CartItem
     template_name = 'Cart/cart_view.html'
+
     def get_success_url(self):
-        user_id = self.kwargs['user_id']
-        return reverse_lazy('user_cart', kwargs={'user_id':user_id})
+        # If user is logged in → redirect to their cart
+        if self.request.user.is_authenticated:
+            return reverse_lazy('user_cart')
+
+        # If guest user → redirect to session cart
+        return reverse_lazy('session_cart')
+    
+    # def post(self, request, pk):
+    #     # Get the right cart (user or session)
+    #     if request.user.is_authenticated:
+    #         cart, _ = Cart.objects.get_or_create(user=request.user)
+    #     else:
+    #         if not request.session.session_key:
+    #             request.session.create()
+    #         cart, _ = Cart.objects.get_or_create(session_id=request.session.session_key)
+
+    #     # Now delete ONLY if the item belongs to THIS cart
+    #     cart_item = get_object_or_404(CartItem, pk=pk, cart=cart)
+    #     cart_item.delete()
+
+    #     return redirect("user_cart") 
 
 
 class ViewWishlist(View):
@@ -164,9 +214,6 @@ class ViewWishlist(View):
         try:
             wish_id = Wishlist.objects.get(user_id=request.user.id)
             wish_product = wish_id.products.all()
-            print(wish_product)
-            # product = [Product.objects.get(id=product.id) for product in wish_product]
-            # print(product)
             context = {
                 'count': wish_product.count(),
                 'products': wish_product
@@ -174,6 +221,7 @@ class ViewWishlist(View):
             return render(request, template_name='wishlist/userWishlist.html', context=context)
         except:
             return render(request, template_name='wishlist/userWishlist.html')
+
     def post(self, request):
         current_user = request.user.id
         wish_product_id = request.POST.get('product_id')

@@ -23,7 +23,18 @@
                                     {% endif %}
                                 </p>
 
-                                <form method="POST" class="mx-1 mx-md-4" id="otpForm">
+                                {% if last_otp_sent %}
+                                    <div class="alert alert-info text-center">
+                                        Last OTP sent: {{ last_otp_sent|date:"H:i:s" }} <br>
+                                        OTP valid for {{ otp_validity_minutes }} minutes (until {{ otp_expires_at|date:"H:i:s" }}) <br>
+                                        Attempts left: {{ attempts_left }} / {{ max_attempts }} <br>
+                                        You can resend OTP after {{ email_reset_time }} seconds.
+                                    </div>
+                                {% endif %}
+
+
+                                <form action="{% url 'verify_otp' pk=user.id  %}"
+                                method="POST" class="mx-1 mx-md-4" id="otpForm">
                                     {% csrf_token %}
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
@@ -35,21 +46,19 @@
                                     </div>
                                     <input type="hidden" name="otp" id="id_otp">
 
-                                    {% if form.errors.otp %}
-                                    <div class="alert text-danger">{{ form.errors.otp }}</div>
-                                    {% endif %}
-
-                                    {% if error_message %}
-                                    <div class="alert text-danger">{{ error_message }}</div>
-                                    {% endif %}
-
                                     {% if messages %}
-                                    <ul class="messages">
-                                        {% for message in messages %}
-                                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% endif %}
+                                    <div class="messages">
+                                      {% for message in messages %}
+                                        <p class="alert 
+                                                  {% if message.tags == 'error' %}alert-danger
+                                                  {% elif message.tags == 'warning' %}alert-warning
+                                                  {% elif message.tags == 'success' %}alert-success
+                                                  {% else %}alert-info{% endif %}">
+                                          {{ message }}
+                                        </p>
+                                      {% endfor %}
+                                    </div>
+                                  {% endif %}
 
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <button type="submit" class="btn btn-primary btn-lg">Confirm</button>

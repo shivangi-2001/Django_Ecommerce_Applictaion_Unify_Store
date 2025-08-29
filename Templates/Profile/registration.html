@@ -1,74 +1,134 @@
-{% extends 'layout/base.html' %}
-{% block content %}
-<section class="vh-100" style="background-color: #eee;">
+{% extends 'layout/base.html' %} {% block content %}
+<section class="vh-100" style="background-color: #eee">
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-lg-12 col-xl-11">
-        <div class="card text-black" style="border-radius: 25px;">
+
+        <div class="card text-black" style="border-radius: 25px">
+          
           <div class="card-body p-md-5">
             <div class="row justify-content-center">
-              <h3 class="text-center">Already have account? <a class="text-danger" href="{% url 'login' %}">Sign in</a></h3>
-              <h5 class="text-center">Not Verified your accounts?<a type="button" class="text-primary mx-2" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#exampleModal">
-  click here
-</a></h5>
+              <h3 class="text-center">
+                Already have account?
+                <a class="text-danger" href="{% url 'login' %}">Sign in</a>
+              </h3>
+              <h5 class="text-center">
+                Not Verified your accounts?<a
+                  type="button"
+                  class="text-primary mx-2"
+                  data-mdb-ripple-init
+                  data-mdb-modal-init
+                  data-mdb-target="#exampleModal"
+                >
+                  click here
+                </a>
+              </h5>
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                <p class="h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" >Sign up</p>
+                {% if messages %}
+                <div class="messages">
+                  {% for message in messages %}
+                    <p class="alert 
+                              {% if message.tags == 'error' %}alert-danger
+                              {% elif message.tags == 'warning' %}alert-warning
+                              {% elif message.tags == 'success' %}alert-success
+                              {% else %}alert-info{% endif %}">
+                      {{ message }}
+                    </p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+                <p class="h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 
                 <form method="POST" class="mx-1 mx-md-4">
-
-                  {% csrf_token %}
-                  {% if form.errors %}
-                  <li class="list-group-item text-danger" >{{ form.errors }}</li>
-                  {% endif %}
-
-                  {% if error_message %}
+                  {% csrf_token %} {% if form.errors %}
+                  <li class="list-group-item text-danger">{{ form.errors }}</li>
+                  {% endif %} {% if error_message %}
                   <div class="alert alert-danger">{{ error_message }}</div>
                   {% endif %}
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="email" name="email" maxlength="100" autofocus required id="id_email"class="form-control" />
-                      <label class="form-label" for="id_email">Your Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        maxlength="100"
+                        autofocus
+                        required
+                        id="id_email"
+                        class="form-control"
+                      />
+                      <label class="form-label" for="id_email"
+                        >Your Email</label
+                      >
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="password" id="id_password1" class="form-control"  name="password1" autocomplete="new-password" required aria-describedby="id_password1_helptext"  />
-                      <label class="form-label" for="id_password1">Password</label>
+                      <input
+                        type="password"
+                        id="id_password1"
+                        class="form-control"
+                        name="password1"
+                        autocomplete="new-password"
+                        required
+                        aria-describedby="id_password1_helptext"
+                      />
+                      <label class="form-label" for="id_password1"
+                        >Password</label
+                      >
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="password" name="password2" autocomplete="new-password" required aria-describedby="id_password2_helptext" id="id_password2" class="form-control" />
-                      <label class="form-label" for="id_password2">Repeat your password</label>
+                      <input
+                        type="password"
+                        name="password2"
+                        autocomplete="new-password"
+                        required
+                        aria-describedby="id_password2_helptext"
+                        id="id_password2"
+                        class="form-control"
+                      />
+                      <label class="form-label" for="id_password2"
+                        >Repeat your password</label
+                      >
                     </div>
                   </div>
 
                   <div class="form-check d-flex justify-content-center mb-5">
-                    <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
+                    <input
+                      class="form-check-input me-2"
+                      type="checkbox"
+                      value=""
+                      id="form2Example3c"
+                      required
+                    />
                     <label class="form-check-label" for="form2Example3">
-                      I agree all statements in <a href="#!">Terms of service</a>
+                      I agree all statements in
+                      <a href="#!">Terms of service</a>
                     </label>
                   </div>
 
                   <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                    <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                      Register
+                    </button>
                   </div>
-
                 </form>
-
               </div>
-              <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                  class="img-fluid" alt="Sample image">
-
+              <div
+                class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2"
+              >
+                <img
+                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                  class="img-fluid"
+                  alt="Sample image"
+                />
               </div>
             </div>
           </div>
@@ -78,30 +138,52 @@
   </div>
 </section>
 
-
 <section>
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="GET" action="{% url 'verify_account' %}">
-      {% csrf_token %}
-      <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Enter Email:</h5>
-        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">Email:</label>
-          <input class="form-control" name="email" autocomplete="off" required/>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" name="email_btn" class="btn btn-primary" data-mdb-ripple-init>Send OTP</button>
-      </div>
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <form method="GET" action="{% url 'verify_account' %}">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Enter Email:</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-mdb-ripple-init
+              data-mdb-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <label class="form-label">Email:</label>
+            <input
+              class="form-control"
+              name="email"
+              autocomplete="off"
+              required
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="submit"
+              name="email_btn"
+              class="btn btn-primary"
+              data-mdb-ripple-init
+            >
+              Send OTP
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-    </form>
   </div>
-</div>
 </section>
-
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -122,7 +204,5 @@
     });
   });
 </script>
-
-
 
 {% endblock %}
